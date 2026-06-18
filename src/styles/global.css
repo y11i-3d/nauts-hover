@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+@theme {
+  --font-sans: var(--font-roboto), ui-sans-serif, system-ui, sans-serif;
+}
+
 @layer base {
   html {
     line-height: normal;

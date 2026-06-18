@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import { Font } from "astro:assets";
 
 const SITE_NAME = "Astro";
 const SITE_DESCRIPTION = "Astro";
@@ -20,6 +21,7 @@ const image = new URL(`${import.meta.env.BASE_URL}share.png`, Astro.site);
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     {/* Meta */}
+    <Font cssVariable="--font-roboto" preload />
     <title>{title}</title>
     <meta name="description" content={description} />
 
