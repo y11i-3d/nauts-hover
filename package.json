@@ -10,7 +10,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "typecheck": "astro check",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "optimize-images": "node tools/optimize-images.mjs"
   },
   "dependencies": {
     "@astrojs/react": "^5.0.7",
