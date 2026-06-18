@@ -4,6 +4,7 @@ import Layout from "../layouts/Layout.astro";
 const order = [6, 2, 5, 4, 9, 3, 1, 7, 8];
 
 const videos: Record<number, string> = {
+  5: `${import.meta.env.BASE_URL}videos/005-dance-l.mp4`,
   9: `${import.meta.env.BASE_URL}videos/009-dance.mp4`,
 };
 
@@ -121,6 +122,13 @@ const members = order.map((id) => ({
         el.style.marginInline = "-30px";
         el.style.zIndex = "20";
         el.style.borderWidth = "4px";
+
+        const video = el.querySelector<HTMLVideoElement>("video");
+        if (video) {
+          video.style.opacity = "1";
+          video.currentTime = 0;
+          void video.play();
+        }
       }
     });
 
@@ -132,6 +140,12 @@ const members = order.map((id) => ({
         el.style.marginInline = "";
         el.style.zIndex = "";
         el.style.borderWidth = "";
+
+        const video = el.querySelector<HTMLVideoElement>("video");
+        if (video) {
+          video.style.opacity = "";
+          video.pause();
+        }
       }
     });
   }
