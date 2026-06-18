@@ -21,12 +21,15 @@ const members = order.map((id) => ({
   >
     <h1 class="text-2xl font-bold">Members</h1>
     <ul
-      class="grid w-full list-none grid-cols-[repeat(auto-fit,minmax(320px,1fr))] gap-x-8 gap-y-16"
+      class="group/members grid w-full list-none grid-cols-[repeat(auto-fit,minmax(320px,1fr))] gap-x-8 gap-y-16"
     >
       {
         members.map((member) => (
           <li class="flex items-center gap-8">
-            <div class="group relative h-60 w-45 shrink-0 cursor-pointer overflow-hidden border-2 border-white transition-transform duration-150 hover:z-10 hover:scale-150 hover:border-4">
+            <div
+              data-thumb
+              class="group relative h-60 w-45 shrink-0 cursor-pointer overflow-hidden border-2 border-white transition-transform duration-150 hover:z-10 hover:scale-150 hover:border-4"
+            >
               <img
                 src={member.image}
                 alt={member.name}
@@ -43,7 +46,7 @@ const members = order.map((id) => ({
                 />
               )}
             </div>
-            <div class="flex w-45 flex-col gap-2">
+            <div class="flex w-45 flex-col gap-2 transition-opacity duration-100 group-has-[[data-thumb]:hover]/members:opacity-0">
               <p class="text-base">{member.role}</p>
               <p class="text-xl font-bold">{member.name}</p>
             </div>
