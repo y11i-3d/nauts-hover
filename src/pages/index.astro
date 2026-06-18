@@ -1,8 +1,10 @@
 ---
 import Layout from "../layouts/Layout.astro";
 
-const members = Array.from({ length: 9 }, (_, i) => ({
-  image: `${import.meta.env.BASE_URL}images/${String(i + 1).padStart(3, "0")}.webp`,
+const order = [6, 2, 3, 4, 9, 5, 1, 7, 8];
+
+const members = order.map((id) => ({
+  image: `${import.meta.env.BASE_URL}images/${String(id).padStart(3, "0")}.webp`,
   role: "dolor sit amet",
   name: "Lorem Ipsum",
 }));
@@ -14,7 +16,7 @@ const members = Array.from({ length: 9 }, (_, i) => ({
   >
     <h1 class="text-2xl font-bold">Members</h1>
     <ul
-      class="grid w-full list-none grid-cols-[repeat(auto-fit,minmax(360px,1fr))] gap-x-8 gap-y-16"
+      class="grid w-full list-none grid-cols-[repeat(auto-fit,minmax(320px,1fr))] gap-x-8 gap-y-16"
     >
       {
         members.map((member) => (
