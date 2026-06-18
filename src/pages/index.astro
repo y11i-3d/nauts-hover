@@ -8,6 +8,7 @@ const videos: Record<number, string> = {
 };
 
 const members = order.map((id) => ({
+  id,
   image: `${import.meta.env.BASE_URL}images/${String(id).padStart(3, "0")}.webp`,
   video: videos[id] ?? null,
   role: "dolor sit amet",
@@ -29,10 +30,10 @@ const members = order.map((id) => ({
           <li class="flex items-center gap-8">
             <div
               data-thumb
+              data-id={member.id}
               class:list={[
-                "group relative h-60 w-45 shrink-0 cursor-pointer overflow-hidden border-2 border-white hover:z-10 hover:border-4",
-                member.video &&
-                  "transition-[width,margin] duration-150 hover:-mx-7.5 hover:w-60",
+                "group relative h-60 w-45 shrink-0 cursor-pointer overflow-hidden border-2 border-white transition-[transform,width,margin] duration-150 group-has-[[data-thumb]:hover]/members:not-hover:pointer-events-none hover:z-10 hover:border-4",
+                member.video && "hover:-mx-7.5 hover:w-60",
               ]}
             >
               <img
@@ -88,6 +89,48 @@ const members = order.map((id) => ({
       const originX = thumb.offsetLeft + thumb.offsetWidth / 2;
       const originY = thumb.offsetTop + thumb.offsetHeight / 2;
       list.style.transformOrigin = `${originX}px ${originY}px`;
+    });
+  }
+
+  const center = document.querySelector<HTMLElement>('[data-id="9"]');
+  const movers = [
+    {
+      el: document.querySelector<HTMLElement>('[data-id="1"]'),
+      rotate: -15,
+      distanceX: 0.45,
+      distanceY: 0.6,
+    },
+    {
+      el: document.querySelector<HTMLElement>('[data-id="5"]'),
+      rotate: 15,
+      distanceX: 0.4,
+      distanceY: 0.75,
+    },
+  ];
+
+  if (center) {
+    center.addEventListener("mouseenter", () => {
+      const cx = center.offsetLeft + center.offsetWidth / 2;
+      const cy = center.offsetTop + center.offsetHeight / 2;
+      for (const { el, rotate, distanceX, distanceY } of movers) {
+        if (!el) continue;
+        const dx = (cx - (el.offsetLeft + el.offsetWidth / 2)) * distanceX;
+        const dy = (cy - (el.offsetTop + el.offsetHeight / 2)) * distanceY;
+        el.style.transform = `translate(${dx}px, ${dy}px) rotate(${rotate}deg)`;
+        el.style.width = "240px";
+        el.style.marginInline = "-30px";
+        el.style.zIndex = "20";
+      }
+    });
+
+    center.addEventListener("mouseleave", () => {
+      for (const { el } of movers) {
+        if (!el) continue;
+        el.style.transform = "";
+        el.style.width = "";
+        el.style.marginInline = "";
+        el.style.zIndex = "";
+      }
     });
   }
 </script>
