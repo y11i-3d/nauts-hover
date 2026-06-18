@@ -21,14 +21,15 @@ const members = order.map((id) => ({
   >
     <h1 class="text-2xl font-bold">Members</h1>
     <ul
-      class="group/members grid w-full list-none grid-cols-[repeat(auto-fit,minmax(320px,1fr))] gap-x-8 gap-y-16"
+      data-members
+      class="group/members relative grid w-full list-none grid-cols-[repeat(auto-fit,minmax(320px,1fr))] gap-x-8 gap-y-16 transition-transform duration-150 has-[[data-thumb]:hover]:scale-150"
     >
       {
         members.map((member) => (
           <li class="flex items-center gap-8">
             <div
               data-thumb
-              class="group relative h-60 w-45 shrink-0 cursor-pointer overflow-hidden border-2 border-white transition-transform duration-150 hover:z-10 hover:scale-150 hover:border-4"
+              class="group relative h-60 w-45 shrink-0 cursor-pointer overflow-hidden border-2 border-white hover:z-10 hover:border-4"
             >
               <img
                 src={member.image}
@@ -72,6 +73,17 @@ const members = order.map((id) => ({
     });
     trigger.addEventListener("mouseleave", () => {
       video.pause();
+    });
+  }
+
+  const list = document.querySelector<HTMLElement>("[data-members]");
+
+  for (const thumb of document.querySelectorAll<HTMLElement>("[data-thumb]")) {
+    thumb.addEventListener("mouseenter", () => {
+      if (!list) return;
+      const originX = thumb.offsetLeft + thumb.offsetWidth / 2;
+      const originY = thumb.offsetTop + thumb.offsetHeight / 2;
+      list.style.transformOrigin = `${originX}px ${originY}px`;
     });
   }
 </script>
