@@ -23,5 +23,11 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 
+# raw source assets
+public-raw/
+
+# Documents
+docs/
+
 # temporary files
 tmp/
