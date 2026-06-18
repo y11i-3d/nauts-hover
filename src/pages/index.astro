@@ -1,11 +1,12 @@
 ---
 import Layout from "../layouts/Layout.astro";
 
-const order = [6, 2, 5, 4, 9, 3, 1, 7, 8];
+const order = [7, 6, 5, 4, 9, 3, 1, 8, 2];
 
 const videos: Record<number, string> = {
   1: `${import.meta.env.BASE_URL}videos/001-dance-r.mp4`,
   5: `${import.meta.env.BASE_URL}videos/005-dance-l.mp4`,
+  7: `${import.meta.env.BASE_URL}videos/007-dance-r.mp4`,
   9: `${import.meta.env.BASE_URL}videos/009-dance.mp4`,
 };
 
@@ -98,15 +99,21 @@ const members = order.map((id) => ({
   const movers = [
     {
       el: document.querySelector<HTMLElement>('[data-id="1"]'),
-      rotate: -15,
-      distanceX: 0.45,
-      distanceY: 0.6,
+      rotate: -20,
+      distanceX: 0.5,
+      distanceY: 0.4,
     },
     {
       el: document.querySelector<HTMLElement>('[data-id="5"]'),
       rotate: 15,
       distanceX: 0.4,
-      distanceY: 0.75,
+      distanceY: 0.85,
+    },
+    {
+      el: document.querySelector<HTMLElement>('[data-id="7"]'),
+      rotate: -10,
+      distanceX: 0.5,
+      distanceY: 0.35,
     },
   ];
 
