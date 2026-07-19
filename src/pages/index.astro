@@ -29,7 +29,7 @@ const members = order.map((id) => {
   >
     <div
       data-stage
-      class="mx-auto flex w-full max-w-7xl flex-col gap-16 transition-transform duration-800 ease-[cubic-bezier(0.16,1,0.3,1)] has-[[data-thumb]:hover]:scale-125"
+      class="ease-expo-out mx-auto flex w-full max-w-7xl flex-col gap-16 transition-transform duration-800 has-[[data-thumb]:hover]:scale-125"
     >
       <h1 class="text-2xl font-bold">Members</h1>
       <ul
@@ -42,7 +42,7 @@ const members = order.map((id) => {
                 data-thumb
                 data-id={member.id}
                 class:list={[
-                  "group relative h-60 w-45 shrink-0 cursor-pointer overflow-hidden transition-[transform,width,margin] duration-400 [--frame-w:0px] group-has-[[data-thumb]:hover]/members:not-hover:pointer-events-none after:pointer-events-none after:absolute after:inset-0 after:border-[length:var(--frame-w)] after:border-white after:transition-[border-width] after:duration-150 ease-[cubic-bezier(0.25,1,0.5,1)] hover:[--frame-w:4px]",
+                  "group ease-quart-out relative h-60 w-45 shrink-0 cursor-pointer overflow-hidden transition-[transform,width,margin] duration-400 [--frame-w:0px] group-has-[[data-thumb]:hover]/members:not-hover:pointer-events-none after:pointer-events-none after:absolute after:inset-0 after:border-[length:var(--frame-w)] after:border-white after:transition-[border-width] after:duration-150 hover:[--frame-w:4px]",
                   member.video && "hover:-mx-7.5 hover:w-60",
                   member.id !== 9 && "pointer-events-none",
                   [1, 5, 7].includes(member.id) && "z-30",
@@ -165,7 +165,7 @@ const members = order.map((id) => {
             (distanceY + jitter(0.05));
           const angle = rotate + jitter(10);
           el.style.transitionDuration = `${durations[index]}s`;
-          el.style.transitionTimingFunction = "cubic-bezier(0.16,1,0.3,1)";
+          el.style.transitionTimingFunction = "var(--ease-expo-out)";
           el.style.transform = `translate(${dx}px, ${dy}px) rotate(${angle}deg)`;
           el.style.width = "240px";
           el.style.marginInline = "-30px";
