@@ -21,140 +21,157 @@ const members = order.map((id) => ({
 
 <Layout>
   <main
-    class="flex min-h-screen w-full flex-col gap-16 bg-neutral-200 p-16 text-neutral-900"
+    class="flex min-h-screen w-full flex-col gap-16 overflow-hidden bg-neutral-200 p-16 text-neutral-900"
   >
-    <h1 class="text-2xl font-bold">Members</h1>
-    <ul
-      data-members
-      class="group/members relative grid w-full list-none grid-cols-[repeat(auto-fit,minmax(320px,1fr))] gap-x-8 gap-y-16 transition-transform duration-150 has-[[data-thumb]:hover]:scale-125"
+    <div
+      data-stage
+      class="mx-auto flex w-full max-w-7xl flex-col gap-16 transition-transform duration-800 ease-[cubic-bezier(0.16,1,0.3,1)] has-[[data-thumb]:hover]:scale-125"
     >
-      {
-        members.map((member) => (
-          <li class="flex items-center gap-8">
-            <div
-              data-thumb
-              data-id={member.id}
-              class:list={[
-                "group relative h-60 w-45 shrink-0 cursor-pointer overflow-hidden border-2 border-white transition-[transform,width,margin] duration-150 group-has-[[data-thumb]:hover]/members:not-hover:pointer-events-none hover:z-10 hover:border-4",
-                member.video && "hover:-mx-7.5 hover:w-60",
-              ]}
-            >
-              <img
-                src={member.image}
-                alt={member.name}
-                class="size-full object-cover"
-              />
-              {member.video && (
-                <video
-                  src={member.video}
-                  muted
-                  loop
-                  playsinline
-                  data-hover-play
-                  class="absolute inset-0 size-full object-cover opacity-0 transition-opacity duration-150 group-hover:opacity-100"
+      <h1 class="text-2xl font-bold">Members</h1>
+      <ul
+        class="group/members relative grid w-full list-none grid-cols-3 gap-x-8 gap-y-16"
+      >
+        {
+          members.map((member) => (
+            <li class="flex items-center gap-8">
+              <div
+                data-thumb
+                data-id={member.id}
+                class:list={[
+                  "group relative h-60 w-45 shrink-0 cursor-pointer overflow-hidden border-2 border-white transition-[transform,width,margin] duration-150 group-has-[[data-thumb]:hover]/members:not-hover:pointer-events-none hover:z-10 hover:border-4",
+                  member.video && "hover:-mx-7.5 hover:w-60",
+                  member.id !== 9 && "pointer-events-none",
+                ]}
+              >
+                <img
+                  src={member.image}
+                  alt={member.name}
+                  class="size-full object-cover"
                 />
-              )}
-            </div>
-            <div class="flex w-45 flex-col gap-2 transition-opacity duration-100 group-has-[[data-thumb]:hover]/members:opacity-0">
-              <p class="text-base">{member.role}</p>
-              <p class="text-xl font-bold">{member.name}</p>
-            </div>
-          </li>
-        ))
-      }
-    </ul>
+                {member.video && (
+                  <video
+                    src={member.video}
+                    muted
+                    loop
+                    playsinline
+                    data-hover-play
+                    class="absolute inset-0 size-full object-cover opacity-0 transition-opacity duration-150 group-hover:opacity-100"
+                  />
+                )}
+              </div>
+              <div class="flex w-45 flex-col gap-2 transition-opacity duration-100 group-has-[[data-thumb]:hover]/members:opacity-0">
+                <p class="text-base">{member.role}</p>
+                <p class="text-xl font-bold">{member.name}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
   </main>
+
+  <script>
+    const videos = document.querySelectorAll<HTMLVideoElement>(
+      "video[data-hover-play]",
+    );
+
+    for (const video of videos) {
+      const trigger = video.parentElement;
+      if (!trigger) continue;
+
+      trigger.addEventListener("mouseenter", () => {
+        video.currentTime = 0;
+        void video.play();
+      });
+      trigger.addEventListener("mouseleave", () => {
+        video.pause();
+      });
+    }
+
+    const stage = document.querySelector<HTMLElement>("[data-stage]");
+
+    for (const thumb of document.querySelectorAll<HTMLElement>(
+      "[data-thumb]",
+    )) {
+      thumb.addEventListener("mouseenter", () => {
+        if (!stage) return;
+        const thumbRect = thumb.getBoundingClientRect();
+        const stageRect = stage.getBoundingClientRect();
+        const originX = thumbRect.left - stageRect.left + thumbRect.width / 2;
+        const originY = thumbRect.top - stageRect.top + thumbRect.height / 2;
+        stage.style.transformOrigin = `${originX}px ${originY}px`;
+      });
+    }
+
+    const center = document.querySelector<HTMLElement>('[data-id="9"]');
+    const movers = [
+      {
+        el: document.querySelector<HTMLElement>('[data-id="1"]'),
+        rotate: -20,
+        distanceX: 0.5,
+        distanceY: 0.4,
+      },
+      {
+        el: document.querySelector<HTMLElement>('[data-id="5"]'),
+        rotate: 15,
+        distanceX: 0.4,
+        distanceY: 0.85,
+      },
+      {
+        el: document.querySelector<HTMLElement>('[data-id="7"]'),
+        rotate: -10,
+        distanceX: 0.5,
+        distanceY: 0.35,
+      },
+    ];
+
+    if (center) {
+      center.addEventListener("mouseenter", () => {
+        const cx = center.offsetLeft + center.offsetWidth / 2;
+        const cy = center.offsetTop + center.offsetHeight / 2;
+        const durations = [0.4, 0.7, 0.9];
+        for (let i = durations.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [durations[i], durations[j]] = [durations[j], durations[i]];
+        }
+        movers.forEach(({ el, rotate, distanceX, distanceY }, index) => {
+          if (!el) return;
+          const dx = (cx - (el.offsetLeft + el.offsetWidth / 2)) * distanceX;
+          const dy = (cy - (el.offsetTop + el.offsetHeight / 2)) * distanceY;
+          el.style.transitionDuration = `${durations[index]}s`;
+          el.style.transitionTimingFunction = "cubic-bezier(0.16,1,0.3,1)";
+          el.style.transform = `translate(${dx}px, ${dy}px) rotate(${rotate}deg)`;
+          el.style.width = "240px";
+          el.style.marginInline = "-30px";
+          el.style.zIndex = "20";
+          el.style.borderWidth = "4px";
+
+          const video = el.querySelector<HTMLVideoElement>("video");
+          if (video) {
+            video.style.opacity = "1";
+            video.currentTime = 0;
+            void video.play();
+          }
+        });
+      });
+
+      center.addEventListener("mouseleave", () => {
+        for (const { el } of movers) {
+          if (!el) continue;
+          el.style.transitionDuration = "0.6s";
+          el.style.transform = "";
+          el.style.width = "";
+          el.style.marginInline = "";
+          el.style.zIndex = "";
+          el.style.borderWidth = "";
+
+          const video = el.querySelector<HTMLVideoElement>("video");
+          if (video) {
+            video.style.opacity = "";
+            video.pause();
+          }
+        }
+      });
+    }
+  </script>
 </Layout>
-
-<script>
-  const videos = document.querySelectorAll<HTMLVideoElement>(
-    "video[data-hover-play]",
-  );
-
-  for (const video of videos) {
-    const trigger = video.parentElement;
-    if (!trigger) continue;
-
-    trigger.addEventListener("mouseenter", () => {
-      video.currentTime = 0;
-      void video.play();
-    });
-    trigger.addEventListener("mouseleave", () => {
-      video.pause();
-    });
-  }
-
-  const list = document.querySelector<HTMLElement>("[data-members]");
-
-  for (const thumb of document.querySelectorAll<HTMLElement>("[data-thumb]")) {
-    thumb.addEventListener("mouseenter", () => {
-      if (!list) return;
-      const originX = thumb.offsetLeft + thumb.offsetWidth / 2;
-      const originY = thumb.offsetTop + thumb.offsetHeight / 2;
-      list.style.transformOrigin = `${originX}px ${originY}px`;
-    });
-  }
-
-  const center = document.querySelector<HTMLElement>('[data-id="9"]');
-  const movers = [
-    {
-      el: document.querySelector<HTMLElement>('[data-id="1"]'),
-      rotate: -20,
-      distanceX: 0.5,
-      distanceY: 0.4,
-    },
-    {
-      el: document.querySelector<HTMLElement>('[data-id="5"]'),
-      rotate: 15,
-      distanceX: 0.4,
-      distanceY: 0.85,
-    },
-    {
-      el: document.querySelector<HTMLElement>('[data-id="7"]'),
-      rotate: -10,
-      distanceX: 0.5,
-      distanceY: 0.35,
-    },
-  ];
-
-  if (center) {
-    center.addEventListener("mouseenter", () => {
-      const cx = center.offsetLeft + center.offsetWidth / 2;
-      const cy = center.offsetTop + center.offsetHeight / 2;
-      for (const { el, rotate, distanceX, distanceY } of movers) {
-        if (!el) continue;
-        const dx = (cx - (el.offsetLeft + el.offsetWidth / 2)) * distanceX;
-        const dy = (cy - (el.offsetTop + el.offsetHeight / 2)) * distanceY;
-        el.style.transform = `translate(${dx}px, ${dy}px) rotate(${rotate}deg)`;
-        el.style.width = "240px";
-        el.style.marginInline = "-30px";
-        el.style.zIndex = "20";
-        el.style.borderWidth = "4px";
-
-        const video = el.querySelector<HTMLVideoElement>("video");
-        if (video) {
-          video.style.opacity = "1";
-          video.currentTime = 0;
-          void video.play();
-        }
-      }
-    });
-
-    center.addEventListener("mouseleave", () => {
-      for (const { el } of movers) {
-        if (!el) continue;
-        el.style.transform = "";
-        el.style.width = "";
-        el.style.marginInline = "";
-        el.style.zIndex = "";
-        el.style.borderWidth = "";
-
-        const video = el.querySelector<HTMLVideoElement>("video");
-        if (video) {
-          video.style.opacity = "";
-          video.pause();
-        }
-      }
-    });
-  }
-</script>
