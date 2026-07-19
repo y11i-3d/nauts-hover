@@ -42,9 +42,11 @@ const members = order.map((id) => {
                 data-thumb
                 data-id={member.id}
                 class:list={[
-                  "group relative h-60 w-45 shrink-0 cursor-pointer overflow-hidden border-2 border-white transition-[transform,width,margin] duration-150 group-has-[[data-thumb]:hover]/members:not-hover:pointer-events-none hover:z-10 hover:border-4",
+                  "group relative h-60 w-45 shrink-0 cursor-pointer overflow-hidden border-2 border-white transition-[transform,width,margin] duration-150 group-has-[[data-thumb]:hover]/members:not-hover:pointer-events-none hover:border-4",
                   member.video && "hover:-mx-7.5 hover:w-60",
                   member.id !== 9 && "pointer-events-none",
+                  [1, 5, 7].includes(member.id) && "z-30",
+                  member.id === 9 && "z-20",
                 ]}
               >
                 <picture class="contents">
@@ -153,7 +155,6 @@ const members = order.map((id) => {
           el.style.transform = `translate(${dx}px, ${dy}px) rotate(${rotate}deg)`;
           el.style.width = "240px";
           el.style.marginInline = "-30px";
-          el.style.zIndex = "20";
           el.style.borderWidth = "4px";
 
           const video = el.querySelector<HTMLVideoElement>("video");
@@ -172,7 +173,6 @@ const members = order.map((id) => {
           el.style.transform = "";
           el.style.width = "";
           el.style.marginInline = "";
-          el.style.zIndex = "";
           el.style.borderWidth = "";
 
           const video = el.querySelector<HTMLVideoElement>("video");
