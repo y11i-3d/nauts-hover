@@ -2,11 +2,17 @@
 import react from "@astrojs/react";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig, fontProviders } from "astro/config";
+import { readFileSync } from "node:fs";
+
+const pkg = JSON.parse(readFileSync("./package.json", "utf-8"));
+const repository = pkg.repository || "";
+
+const [userName, repoName] = repository.replace("github:", "").split("/");
+
 // https://astro.build/config
 export default defineConfig({
-  base: "/nauts-hover/",
-
-  site: "https://example.com",
+  site: `https://${userName}.github.io`,
+  base: `/${repoName}`,
   trailingSlash: "always",
 
   devToolbar: {
