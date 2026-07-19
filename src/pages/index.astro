@@ -127,22 +127,24 @@ const members = order.map((id) => {
       {
         el: document.querySelector<HTMLElement>('[data-id="1"]'),
         rotate: -20,
-        distanceX: 0.5,
-        distanceY: 0.4,
+        distanceX: 0.45,
+        distanceY: 0.35,
       },
       {
         el: document.querySelector<HTMLElement>('[data-id="5"]'),
         rotate: 15,
-        distanceX: 0.4,
-        distanceY: 0.85,
+        distanceX: 0.35,
+        distanceY: 0.8,
       },
       {
         el: document.querySelector<HTMLElement>('[data-id="7"]'),
         rotate: -10,
-        distanceX: 0.5,
-        distanceY: 0.35,
+        distanceX: 0.45,
+        distanceY: 0.3,
       },
     ];
+
+    const jitter = (range: number) => (Math.random() * 2 - 1) * range;
 
     if (center) {
       center.addEventListener("mouseenter", () => {
@@ -155,11 +157,16 @@ const members = order.map((id) => {
         }
         movers.forEach(({ el, rotate, distanceX, distanceY }, index) => {
           if (!el) return;
-          const dx = (cx - (el.offsetLeft + el.offsetWidth / 2)) * distanceX;
-          const dy = (cy - (el.offsetTop + el.offsetHeight / 2)) * distanceY;
+          const dx =
+            (cx - (el.offsetLeft + el.offsetWidth / 2)) *
+            (distanceX + jitter(0.05));
+          const dy =
+            (cy - (el.offsetTop + el.offsetHeight / 2)) *
+            (distanceY + jitter(0.05));
+          const angle = rotate + jitter(10);
           el.style.transitionDuration = `${durations[index]}s`;
           el.style.transitionTimingFunction = "cubic-bezier(0.16,1,0.3,1)";
-          el.style.transform = `translate(${dx}px, ${dy}px) rotate(${rotate}deg)`;
+          el.style.transform = `translate(${dx}px, ${dy}px) rotate(${angle}deg)`;
           el.style.width = "240px";
           el.style.marginInline = "-30px";
           el.style.setProperty("--frame-w", "4px");
