@@ -29,9 +29,13 @@ const members = order.map((id) => {
   >
     <div
       data-stage
-      class="ease-expo-out mx-auto flex w-full max-w-7xl flex-col gap-16 transition-transform duration-800 has-[[data-thumb]:hover]:scale-125"
+      class="group/stage ease-expo-out mx-auto flex w-full max-w-7xl flex-col gap-16 transition-transform duration-800 has-[[data-thumb]:hover]:scale-125"
     >
-      <h1 class="text-2xl font-bold">Members</h1>
+      <h1
+        class="text-2xl font-bold transition-opacity duration-500 ease-sine-in group-has-[[data-thumb]:hover]/stage:opacity-0 group-has-[[data-thumb]:hover]/stage:duration-100 group-has-[[data-thumb]:hover]/stage:ease-sine-out"
+      >
+        Members
+      </h1>
       <ul
         class="group/members relative grid w-full list-none grid-cols-3 gap-x-8 gap-y-16"
       >
@@ -74,7 +78,7 @@ const members = order.map((id) => {
                   )}
                 </div>
               </div>
-              <div class="flex w-45 flex-col gap-2 transition-opacity duration-100 group-has-[[data-thumb]:hover]/members:opacity-0">
+              <div class="flex w-45 flex-col gap-2 transition-opacity duration-500 ease-sine-in group-has-[[data-thumb]:hover]/stage:opacity-0 group-has-[[data-thumb]:hover]/stage:duration-100 group-has-[[data-thumb]:hover]/stage:ease-sine-out">
                 <p class="text-base">{member.role}</p>
                 <p class="text-xl font-bold">{member.name}</p>
               </div>
