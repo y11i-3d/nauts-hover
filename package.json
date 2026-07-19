@@ -11,7 +11,8 @@
     "preview": "astro preview",
     "typecheck": "astro check",
     "lint": "eslint .",
-    "optimize-images": "node tools/optimize-images.mjs"
+    "optimize-images": "node tools/optimize-images.mjs",
+    "optimize-videos": "node tools/optimize-videos.mjs"
   },
   "dependencies": {
     "@astrojs/react": "^5.0.7",
