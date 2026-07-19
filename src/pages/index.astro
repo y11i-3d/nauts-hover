@@ -66,6 +66,7 @@ const members = order.map((id) => {
                     muted
                     loop
                     playsinline
+                    preload="auto"
                     data-hover-play
                     class="absolute inset-0 size-full object-cover opacity-0 transition-opacity duration-150 group-hover:opacity-100"
                   />
@@ -82,7 +83,11 @@ const members = order.map((id) => {
     </div>
   </main>
 
+  <div data-warmup-gate class="fixed inset-0 z-50 bg-white"></div>
+
   <script>
+    const WARMUP_TIMEOUT_MS = 5000;
+
     const videos = document.querySelectorAll<HTMLVideoElement>(
       "video[data-hover-play]",
     );
@@ -183,5 +188,84 @@ const members = order.map((id) => {
         }
       });
     }
+
+    const warmupAborter = new AbortController();
+    const warmupSignal = warmupAborter.signal;
+
+    const waitForEnoughData = (video: HTMLVideoElement) =>
+      new Promise<void>((resolve, reject) => {
+        if (
+          warmupSignal.aborted ||
+          video.readyState >= video.HAVE_ENOUGH_DATA
+        ) {
+          resolve();
+          return;
+        }
+        const options = { once: true, signal: warmupSignal };
+        video.addEventListener("canplaythrough", () => resolve(), options);
+        video.addEventListener("error", () => reject(video.error), options);
+        warmupSignal.addEventListener("abort", () => resolve(), {
+          once: true,
+        });
+      });
+
+    const waitForFrame = (video: HTMLVideoElement) =>
+      new Promise<void>((resolve) => {
+        if (warmupSignal.aborted) {
+          resolve();
+          return;
+        }
+        if (typeof video.requestVideoFrameCallback === "function") {
+          const handle = video.requestVideoFrameCallback(() => resolve());
+          warmupSignal.addEventListener(
+            "abort",
+            () => {
+              video.cancelVideoFrameCallback(handle);
+              resolve();
+            },
+            { once: true },
+          );
+          return;
+        }
+        const fallbackTimer = setTimeout(resolve, 50);
+        warmupSignal.addEventListener(
+          "abort",
+          () => {
+            clearTimeout(fallbackTimer);
+            resolve();
+          },
+          { once: true },
+        );
+      });
+
+    const warmup = async (video: HTMLVideoElement) => {
+      await waitForEnoughData(video);
+      if (warmupSignal.aborted) return;
+      await video.play();
+      if (warmupSignal.aborted) return;
+      await waitForFrame(video);
+      if (warmupSignal.aborted) return;
+      video.pause();
+      video.currentTime = 0;
+    };
+
+    const removeGate = () => {
+      document.querySelector("[data-warmup-gate]")?.remove();
+    };
+
+    const warmupTimer = setTimeout(() => {
+      warmupAborter.abort();
+      for (const video of videos) {
+        video.pause();
+        video.currentTime = 0;
+      }
+      removeGate();
+    }, WARMUP_TIMEOUT_MS);
+
+    void Promise.allSettled(Array.from(videos, warmup)).then(() => {
+      if (warmupSignal.aborted) return;
+      clearTimeout(warmupTimer);
+      removeGate();
+    });
   </script>
 </Layout>
