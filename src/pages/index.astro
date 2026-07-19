@@ -29,10 +29,10 @@ const members = order.map((id) => {
   >
     <div
       data-stage
-      class="group/stage ease-expo-out mx-auto flex w-full max-w-7xl flex-col gap-16 transition-transform duration-800 has-[[data-thumb]:hover]:scale-125"
+      class="group/stage ease-expo-out mx-auto flex w-full max-w-7xl flex-col gap-16 transition-transform duration-800 has-[[data-thumb]:is(:hover,[data-hovered])]:scale-125"
     >
       <h1
-        class="text-2xl font-bold transition-opacity duration-500 ease-sine-in group-has-[[data-thumb]:hover]/stage:opacity-0 group-has-[[data-thumb]:hover]/stage:duration-100 group-has-[[data-thumb]:hover]/stage:ease-sine-out"
+        class="ease-sine-in group-has-[[data-thumb]:is(:hover,[data-hovered])]/stage:ease-sine-out text-2xl font-bold transition-opacity duration-500 group-has-[[data-thumb]:is(:hover,[data-hovered])]/stage:opacity-0 group-has-[[data-thumb]:is(:hover,[data-hovered])]/stage:duration-100"
       >
         Members
       </h1>
@@ -46,8 +46,8 @@ const members = order.map((id) => {
                 data-thumb
                 data-id={member.id}
                 class:list={[
-                  "group ease-quart-out relative h-60 w-45 shrink-0 cursor-pointer overflow-hidden transition-[transform,width,margin] duration-400 [--frame-w:0px] group-has-[[data-thumb]:hover]/members:not-hover:pointer-events-none after:pointer-events-none after:absolute after:inset-0 after:border-[length:var(--frame-w)] after:border-white after:transition-[border-width] after:duration-150 hover:[--frame-w:4px]",
-                  member.video && "hover:-mx-7.5 hover:w-60",
+                  "group ease-quart-out hovered:[--frame-w:4px] relative h-60 w-45 shrink-0 cursor-pointer overflow-hidden transition-[transform,width,margin] duration-400 [--frame-w:0px] group-has-[[data-thumb]:is(:hover,[data-hovered])]/members:not-hover:pointer-events-none after:pointer-events-none after:absolute after:inset-0 after:border-[length:var(--frame-w)] after:border-white after:transition-[border-width] after:duration-150",
+                  member.video && "hovered:-mx-7.5 hovered:w-60",
                   member.id !== 9 && "pointer-events-none",
                   [1, 5, 7].includes(member.id) && "z-30",
                   member.id === 9 && "z-20",
@@ -73,12 +73,12 @@ const members = order.map((id) => {
                       playsinline
                       preload="auto"
                       data-hover-play
-                      class="absolute inset-0 size-full object-cover opacity-0 transition-opacity duration-150 group-hover:opacity-100"
+                      class="absolute inset-0 size-full object-cover opacity-0 transition-opacity duration-150 group-[:is(:hover,[data-hovered])]:opacity-100"
                     />
                   )}
                 </div>
               </div>
-              <div class="flex w-45 flex-col gap-2 transition-opacity duration-500 ease-sine-in group-has-[[data-thumb]:hover]/stage:opacity-0 group-has-[[data-thumb]:hover]/stage:duration-100 group-has-[[data-thumb]:hover]/stage:ease-sine-out">
+              <div class="ease-sine-in group-has-[[data-thumb]:is(:hover,[data-hovered])]/stage:ease-sine-out flex w-45 flex-col gap-2 transition-opacity duration-500 group-has-[[data-thumb]:is(:hover,[data-hovered])]/stage:opacity-0 group-has-[[data-thumb]:is(:hover,[data-hovered])]/stage:duration-100">
                 <p class="text-base">{member.role}</p>
                 <p class="text-xl font-bold">{member.name}</p>
               </div>
@@ -151,7 +151,7 @@ const members = order.map((id) => {
     const jitter = (range: number) => (Math.random() * 2 - 1) * range;
 
     if (center) {
-      center.addEventListener("mouseenter", () => {
+      const converge = () => {
         const cx = center.offsetLeft + center.offsetWidth / 2;
         const cy = center.offsetTop + center.offsetHeight / 2;
         const durations = [0.4, 0.7, 0.9];
@@ -182,9 +182,9 @@ const members = order.map((id) => {
             void video.play();
           }
         });
-      });
+      };
 
-      center.addEventListener("mouseleave", () => {
+      const release = () => {
         for (const { el } of movers) {
           if (!el) continue;
           el.style.transitionDuration = "0.6s";
@@ -199,6 +199,28 @@ const members = order.map((id) => {
             video.pause();
           }
         }
+      };
+
+      center.addEventListener("mouseenter", converge);
+      center.addEventListener("mouseleave", release);
+
+      const centerVideo = center.querySelector<HTMLVideoElement>("video");
+
+      window.addEventListener("keydown", (event) => {
+        if (event.key.toLowerCase() !== "h" || event.repeat) return;
+        center.setAttribute("data-hovered", "");
+        converge();
+        if (centerVideo) {
+          centerVideo.currentTime = 0;
+          void centerVideo.play();
+        }
+      });
+
+      window.addEventListener("keyup", (event) => {
+        if (event.key.toLowerCase() !== "h") return;
+        center.removeAttribute("data-hovered");
+        release();
+        centerVideo?.pause();
       });
     }
 

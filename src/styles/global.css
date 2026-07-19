@@ -1,6 +1,8 @@
 @import "tailwindcss";
 @import "./ease.css";
 
+@custom-variant hovered (&:is(:hover, [data-hovered]));
+
 @theme {
   --font-sans: var(--font-roboto), ui-sans-serif, system-ui, sans-serif;
 }
