@@ -42,35 +42,37 @@ const members = order.map((id) => {
                 data-thumb
                 data-id={member.id}
                 class:list={[
-                  "group relative h-60 w-45 shrink-0 cursor-pointer overflow-hidden border-2 border-white transition-[transform,width,margin] duration-150 group-has-[[data-thumb]:hover]/members:not-hover:pointer-events-none hover:border-4",
+                  "group relative h-60 w-45 shrink-0 cursor-pointer overflow-hidden transition-[transform,width,margin] duration-150 [--frame-w:0px] group-has-[[data-thumb]:hover]/members:not-hover:pointer-events-none after:pointer-events-none after:absolute after:inset-0 after:border-[length:var(--frame-w)] after:border-white after:transition-[border-width] after:duration-150 hover:[--frame-w:4px]",
                   member.video && "hover:-mx-7.5 hover:w-60",
                   member.id !== 9 && "pointer-events-none",
                   [1, 5, 7].includes(member.id) && "z-30",
                   member.id === 9 && "z-20",
                 ]}
               >
-                <picture class="contents">
-                  <source
-                    media="(min-resolution: 1.5dppx)"
-                    srcset={member.image2x}
-                  />
-                  <img
-                    src={member.image1x}
-                    alt={member.name}
-                    class="size-full object-cover"
-                  />
-                </picture>
-                {member.video && (
-                  <video
-                    src={member.video}
-                    muted
-                    loop
-                    playsinline
-                    preload="auto"
-                    data-hover-play
-                    class="absolute inset-0 size-full object-cover opacity-0 transition-opacity duration-150 group-hover:opacity-100"
-                  />
-                )}
+                <div class="relative size-full border-2 border-white">
+                  <picture class="contents">
+                    <source
+                      media="(min-resolution: 1.5dppx)"
+                      srcset={member.image2x}
+                    />
+                    <img
+                      src={member.image1x}
+                      alt={member.name}
+                      class="size-full object-cover"
+                    />
+                  </picture>
+                  {member.video && (
+                    <video
+                      src={member.video}
+                      muted
+                      loop
+                      playsinline
+                      preload="auto"
+                      data-hover-play
+                      class="absolute inset-0 size-full object-cover opacity-0 transition-opacity duration-150 group-hover:opacity-100"
+                    />
+                  )}
+                </div>
               </div>
               <div class="flex w-45 flex-col gap-2 transition-opacity duration-100 group-has-[[data-thumb]:hover]/members:opacity-0">
                 <p class="text-base">{member.role}</p>
@@ -160,7 +162,7 @@ const members = order.map((id) => {
           el.style.transform = `translate(${dx}px, ${dy}px) rotate(${rotate}deg)`;
           el.style.width = "240px";
           el.style.marginInline = "-30px";
-          el.style.borderWidth = "4px";
+          el.style.setProperty("--frame-w", "4px");
 
           const video = el.querySelector<HTMLVideoElement>("video");
           if (video) {
@@ -178,7 +180,7 @@ const members = order.map((id) => {
           el.style.transform = "";
           el.style.width = "";
           el.style.marginInline = "";
-          el.style.borderWidth = "";
+          el.style.removeProperty("--frame-w");
 
           const video = el.querySelector<HTMLVideoElement>("video");
           if (video) {
