@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./ease.css";
 
 @theme {
   --font-sans: var(--font-roboto), ui-sans-serif, system-ui, sans-serif;
