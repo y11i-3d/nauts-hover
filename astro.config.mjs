@@ -25,6 +25,10 @@ export default defineConfig({
 
   vite: {
     plugins: [tailwindcss()],
+    define: {
+      "import.meta.env.USER_NAME": JSON.stringify(userName),
+      "import.meta.env.REPO_NAME": JSON.stringify(repoName),
+    },
   },
 
   integrations: [react()],
